@@ -1,5 +1,3 @@
-
-
 import argparse
 
 import numpy as np
@@ -8,17 +6,17 @@ import pandas as pd
 import logging
 import datetime
 
-
 import os
 
 from engine.data_preprocessor import DataPreProcessor
 from engine.run import Run
+from engine.utils import get_model_type
 
 logger = logging.getLogger(__name__)
 
 parser = argparse.ArgumentParser(description='regression model')
 
-#here we are assuming that database path contains all the files necessary to process and it has already been divided
+# here we are assuming that database path contains all the files necessary to process and it has already been divided
 parser.add_argument('-p', '--database_path', type=str, default="../data_set/13_record_diast.csv",
                     help='path of directory containting datasets')
 
@@ -27,7 +25,7 @@ parser.add_argument('--result_path', type=str, default=os.path.expanduser('~') +
 
 parser.add_argument('--seed', type=int, default=42, metavar='N',
                     help='random seed (default: 42)')
-#we use cross validation but initially hold out the test set
+# we use cross validation but initially hold out the test set
 parser.add_argument('--test_ratio', type=int, default=0.2,
                     help='Test set ratio for final evaluation')
 
@@ -36,7 +34,6 @@ parser.add_argument('--target_col_name', type=str, default="target",
 
 parser.add_argument('-u', '--useless_col_name', nargs='*', help='column name containing useless values for '
                                                                 'prediction that need to be deleted before regression', default="Unnamed: 0")
-
 
 parser.add_argument('--model', type=str, default="XGBoost",
                     help='The model to use for regression. Current supported packages: XGBoost |'
@@ -62,10 +59,8 @@ for k in args_keys:
     logger.info(s + ' ' * max((len(header) - len(s), 0)))
 logger.info("=" * len(header))
 
-database_fram=DataPreProcessor(data_base_path=args.database_path, y_labels=args.target_col_name,
-                                    test_ratio=args.test_ratio, useless_labels=args.useless_col_name.split(","))
-run_program=Run(database_frame)
-
-
-
-
+database_frame = DataPreProcessor(data_base_path=args.database_path, y_labels=args.target_col_name,
+                                  test_ratio=args.test_ratio, useless_labels=args.useless_col_name.split(","))
+model=get_model_type(args.model)
+run_program = Run(database_frame,model=model)
+run_program.train_model()
