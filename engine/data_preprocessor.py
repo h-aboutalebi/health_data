@@ -19,11 +19,13 @@ class AbstractDataPreProcessor():
     def extract_y_labels(self, *args):
         raise NotImplementedError
 
-
 class DataPreProcessor(AbstractDataPreProcessor):
 
-    def __init__(self, data_base_path, y_labels, test_ratio):
+    def __init__(self, data_base_path, y_labels,useless_labels, test_ratio):
         super(DataPreProcessor, self).__init__(data_base_path, y_labels, test_ratio)
+        self.remove_useless_labels(self.x_labels, useless_labels)
+
+        # we put target_labels to the end of dataframe
         self.data_set = pd.concat([self.x_labels, self.y_labels], axis=1)
         self.test_set, self.train_set = self.extract_test_train()
         self.input_size = len(self.data_set.columns) - len(y_labels)
