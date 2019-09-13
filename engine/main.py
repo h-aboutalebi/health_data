@@ -19,7 +19,13 @@ parser.add_argument('-p', '--database_path', type=str, default="../data_set",
                     help='path of directory containting datasets')
 
 parser.add_argument('--result_path', type=str, default=os.path.expanduser('~') + '/results',
-                    help='path of directory containting logs for runs')
+                    help='path of directory containing logs for runs')
+
+parser.add_argument('--path_model', type=str, default='/Users/hosseinaboutalebi/results/2019-09-12_23:44:54.939063/model.pkl',
+                    help='path of file containing saved model')
+
+parser.add_argument('--load_mode', action="store_true",
+                    help='Whether we want to load a model from given path or train a model from scartch (Default=False)')
 
 parser.add_argument('--seed', type=int, default=42, metavar='N',
                     help='random seed (default: 42)')
@@ -58,5 +64,5 @@ logger.info("=" * len(header))
 
 database_frame = DataPreProcessor(data_base_path=args.database_path, useless_labels=args.useless_col_name.split(","))
 model=get_model_type(args.model)
-run_program = Run(database_frame,model=model)
-run_program.train_model()
+run_program = Run(database_frame,model=model,file_path_save=file_path_results,file_path_load=args.path_model)
+run_program.train_model(load_mode=args.load_mode)
