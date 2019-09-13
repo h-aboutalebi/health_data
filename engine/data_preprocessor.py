@@ -20,7 +20,7 @@ class DataPreProcessor(AbstractDataPreProcessor):
     def __init__(self, data_base_path, useless_labels):
         super(DataPreProcessor, self).__init__(data_base_path)
         self.remove_useless_labels(self.data_base_list,useless_labels)
-        logger.info("dataset extraction is completed!")
+        logger.info("dataset extraction is completed.")
 
     def extract_database(self, data_base_path):
         return pd.read_csv(data_base_path)

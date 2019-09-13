@@ -27,7 +27,7 @@ parser.add_argument('--path_model', type=str, default='/Users/hosseinaboutalebi/
 parser.add_argument('--load_mode', action="store_true",
                     help='Whether we want to load a model from given path or train a model from scartch (Default=False)')
 
-parser.add_argument('--seed', type=int, default=42, metavar='N',
+parser.add_argument('--seed', type=int, default=442, metavar='N',
                     help='random seed (default: 42)')
 
 parser.add_argument('-u', '--useless_col_name', nargs='*', help='column name containing useless values for '
