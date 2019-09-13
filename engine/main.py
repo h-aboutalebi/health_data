@@ -1,10 +1,8 @@
 import argparse
-
-import numpy as np
-
-import pandas as pd
 import logging
 import datetime
+import random
+import numpy as np
 
 import os
 
@@ -17,7 +15,7 @@ logger = logging.getLogger(__name__)
 parser = argparse.ArgumentParser(description='regression model')
 
 # here we are assuming that database path contains all the files necessary to process and it has already been divided
-parser.add_argument('-p', '--database_path', type=str, default="../data_set/13_record_diast.csv",
+parser.add_argument('-p', '--database_path', type=str, default="../data_set",
                     help='path of directory containting datasets')
 
 parser.add_argument('--result_path', type=str, default=os.path.expanduser('~') + '/results',
@@ -25,12 +23,6 @@ parser.add_argument('--result_path', type=str, default=os.path.expanduser('~') +
 
 parser.add_argument('--seed', type=int, default=42, metavar='N',
                     help='random seed (default: 42)')
-# we use cross validation but initially hold out the test set
-parser.add_argument('--test_ratio', type=int, default=0.2,
-                    help='Test set ratio for final evaluation')
-
-parser.add_argument('--target_col_name', type=str, default="target",
-                    help='column name containing target values for prediction')
 
 parser.add_argument('-u', '--useless_col_name', nargs='*', help='column name containing useless values for '
                                                                 'prediction that need to be deleted before regression', default="Unnamed: 0")
@@ -40,6 +32,11 @@ parser.add_argument('--model', type=str, default="XGBoost",
                          'lightGBM | user_defined')
 
 args = parser.parse_args()
+
+#fixing seed
+random.seed(args.seed)
+np.random.seed(args.seed)
+
 
 file_path_results = args.result_path + "/" + str(datetime.datetime.now()).replace(" ", "_")
 if not os.path.exists(args.result_path):
@@ -59,8 +56,7 @@ for k in args_keys:
     logger.info(s + ' ' * max((len(header) - len(s), 0)))
 logger.info("=" * len(header))
 
-database_frame = DataPreProcessor(data_base_path=args.database_path, y_labels=args.target_col_name,
-                                  test_ratio=args.test_ratio, useless_labels=args.useless_col_name.split(","))
+database_frame = DataPreProcessor(data_base_path=args.database_path, useless_labels=args.useless_col_name.split(","))
 model=get_model_type(args.model)
 run_program = Run(database_frame,model=model)
 run_program.train_model()
