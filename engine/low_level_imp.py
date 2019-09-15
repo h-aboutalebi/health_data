@@ -4,13 +4,6 @@ LARGE_NUMBER = sys.maxsize
 
 import numpy as np
 
-
-class Dataset(object):
-    def __init__(self, X, y):
-        self.X = X
-        self.y = y
-
-
 class TreeNode(object):
     def __init__(self):
         self.is_leaf = False
