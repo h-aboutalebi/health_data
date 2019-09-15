@@ -25,6 +25,6 @@ If you want to load a saved model you should write:
 ```
 python main.py --load_mode --path_model ...
 ```
-where path model is the file containing the saved model.
+where path model is the file containing the saved model. Please note that by default, the program is not on the load mode.
 
 Finally, in the beggining of each run the configuration of each experiment containing all the argument is saved inside the log.
