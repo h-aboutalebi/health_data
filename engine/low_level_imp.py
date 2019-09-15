@@ -159,10 +159,7 @@ class MyGBT(object):
         models = []
         shrinkage_rate = 1.
         best_iteration = None
-        best_val_loss = LARGE_NUMBER
-        train_start_time = time.time()
         for iter_cnt in range(num_boost_round):
-            iter_start_time = time.time()
             scores = self._calc_training_data_scores(train_set, models)
             grad, hessian = self._calc_gradient(train_set, scores)
             learner = self._build_learner(train_set, grad, hessian, shrinkage_rate)
