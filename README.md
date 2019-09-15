@@ -11,6 +11,10 @@ Sample code configuration is as follows:
 ```
 python main.py -m XGBoost --database_path ... --result_path ...
 ```
+or if you want use lightgbm:
+```
+python main.py -m lightgbm --database_path ... --result_path ...
+```
 Please note that after each training, the model is automatically saved inside the directory result_path and the address of the saved model
 is provided ath the end of log file.
 
