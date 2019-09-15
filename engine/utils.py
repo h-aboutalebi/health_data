@@ -2,7 +2,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 from xgboost import XGBRegressor
-from engine.my_lightgbm import My_lightgbm
+from engine.lightgbm_wrapper import LightgbmWrapper
 
 def get_model_type(model_name):
 
@@ -10,7 +10,7 @@ def get_model_type(model_name):
         model = XGBRegressor()
         logger.info("XGBRegressor has been initilized.")
     elif (model_name == "lightgbm"):
-        model = My_lightgbm()
+        model = LightgbmWrapper()
         logger.info("lightgbm has been initilized.")
     else:
         logger.info("model has not been implemented error! Model should be one of: [XGBoost]")

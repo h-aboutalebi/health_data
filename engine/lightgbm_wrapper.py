@@ -1,7 +1,8 @@
 import lightgbm as lgb
+import numpy as np
 
 
-class My_lightgbm():
+class LightgbmWrapper():
 
     def fit(self, x_train, y_train):
         params = {
@@ -19,6 +20,5 @@ class My_lightgbm():
         self.gbm = lgb.train(params, lgb_train,
                              num_boost_round=20)
 
-    def predict(self,X_test):
+    def predict(self, X_test):
         return self.gbm.predict(X_test, num_iteration=self.gbm.best_iteration)
-
