@@ -15,8 +15,8 @@ import time
 class Run():
 
     def __init__(self, database_frame, model, file_path_save, file_path_load):
-        self.data_base_list = [np.array(data.values) for data in database_frame.data_base_list][:3]
-        self.files_name = [f.split("/")[-1] for f in database_frame.files][:3]
+        self.data_base_list = [np.array(data.values) for data in database_frame.data_base_list]
+        self.files_name = [f.split("/")[-1] for f in database_frame.files]
         self.model = model
         self.file_pth_save_model = file_path_save + "/model.pkl"  # This is for saving model
         self.file_pth_load_model = file_path_load

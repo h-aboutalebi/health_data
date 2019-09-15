@@ -21,7 +21,7 @@ parser.add_argument('-p', '--database_path', type=str, default="../data_set",
 parser.add_argument('--result_path', type=str, default=os.path.expanduser('~') + '/results',
                     help='path of directory containing logs for runs')
 
-parser.add_argument('--path_model', type=str, default='/Users/hosseinaboutalebi/results/2019-09-12_23:44:54.939063/model.pkl',
+parser.add_argument('--path_model', type=str, default='/Users/hosseinaboutalebi/results/2019-09-15_17:00:52.182888/model.pkl',
                     help='path of file containing saved model')
 
 parser.add_argument('--load_mode', action="store_true",
