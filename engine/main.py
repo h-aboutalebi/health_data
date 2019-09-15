@@ -33,9 +33,8 @@ parser.add_argument('--seed', type=int, default=442, metavar='N',
 parser.add_argument('-u', '--useless_col_name', nargs='*', help='column name containing useless values for '
                                                                 'prediction that need to be deleted before regression', default="Unnamed: 0")
 
-parser.add_argument('--model', type=str, default="XGBoost",
-                    help='The model to use for regression. Current supported packages: XGBoost |'
-                         'lightGBM | user_defined')
+parser.add_argument('-m','--model', type=str, default="lightgbm",
+                    help='The model to use for regression. Current supported packages: XGBoost | lightGBM')
 
 args = parser.parse_args()
 
