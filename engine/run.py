@@ -33,10 +33,9 @@ class Run():
                 x_train = train_list[:, 1:]  # first column is taget
                 y_train = train_list[:, 1]
                 self.model.fit(x_train, y_train)
-                normalizer = x_train.shape[0]
-                my_y_pred = self.forward_pass(x_test, normalizer)
+                my_y_pred = self.forward_pass(x_test)
                 y_pred = np.array(self.model.predict(x_test))
-                logger.info("Gap between my forward pass and lightgbm is {}".format(mean_squared_error(np.array(y_test), my_y_pred)))
+                logger.info("Gap between my forward pass and lightgbm is {}".format(np.sum(np.abs(y_pred - np.array(my_y_pred)) / x_train.shape[0] )))
                 MSE = mean_squared_error(y_test, y_pred)
                 logger.info("*" * 15)
                 logger.info("Results: For Test Set: {} .With Train Set of {}:".format(self.files_name[i], file_names_train))
@@ -59,19 +58,18 @@ class Run():
                 logger.info("Results: For Test Set: {}:".format(self.files_name[i]))
                 logger.info("Mean Squared Error: {}| Process Time: {}".format(MSE, time.time() - start_time))
 
-    def forward_pass(self, x_test, normalizer):
+    def forward_pass(self, x_test):
         lgb_dict = self.model.gbm.dump_model()
         Final_prediction = []
         for counter, x in enumerate(x_test):
             values = []
             priority = []
             for trees in lgb_dict["tree_info"]:
-                # priority.append(trees["shrinkage"])
+                priority.append(trees["shrinkage"])
                 head = trees["tree_structure"]
                 while (True):
                     if (self.is_leaf(head)):
-                        values.append(head['leaf_value'])
-                        priority.append(head["leaf_count"] / normalizer)
+                        values.append(head['leaf_value']*trees["shrinkage"])
                         break
                     else:
                         head = self.check_node_value(x, head)
@@ -81,6 +79,8 @@ class Run():
     def check_node_value(self, x, head):
         if (head["decision_type"] != "<="):
             logger.info("WARNING, problem in forward pass")
+        if head["default_left"] is False:
+            logger.info("WARNING, problem with default left in forward pass")
         feature = x[head["split_index"]]
         bool = True if feature <= head["threshold"] else False
         if (bool):
