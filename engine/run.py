@@ -33,11 +33,15 @@ class Run():
                 x_train = train_list[:, 1:]  # first column is taget
                 y_train = train_list[:, 1]
                 self.model.fit(x_train, y_train)
+                normalizer = x_train.shape[0]
+                my_y_pred = self.forward_pass(x_test, normalizer)
                 y_pred = np.array(self.model.predict(x_test))
+                logger.info("Gap between my forward pass and lightgbm is {}".format(mean_squared_error(np.array(y_test), my_y_pred)))
                 MSE = mean_squared_error(y_test, y_pred)
                 logger.info("*" * 15)
                 logger.info("Results: For Test Set: {} .With Train Set of {}:".format(self.files_name[i], file_names_train))
                 logger.info("Mean Squared Error: {}| Process Time: {}".format(MSE, time.time() - start_time))
+
             self.save_model()
             logger.info("Model has been saved in following path:\n {}".format(self.file_pth_save_model))
         else:
@@ -54,6 +58,41 @@ class Run():
                 logger.info("*" * 15)
                 logger.info("Results: For Test Set: {}:".format(self.files_name[i]))
                 logger.info("Mean Squared Error: {}| Process Time: {}".format(MSE, time.time() - start_time))
+
+    def forward_pass(self, x_test, normalizer):
+        lgb_dict = self.model.gbm.dump_model()
+        Final_prediction = []
+        for counter, x in enumerate(x_test):
+            values = []
+            priority = []
+            for trees in lgb_dict["tree_info"]:
+                # priority.append(trees["shrinkage"])
+                head = trees["tree_structure"]
+                while (True):
+                    if (self.is_leaf(head)):
+                        values.append(head['leaf_value'])
+                        priority.append(head["leaf_count"] / normalizer)
+                        break
+                    else:
+                        head = self.check_node_value(x, head)
+            Final_prediction.append(sum(values))
+        return np.array(Final_prediction)
+
+    def check_node_value(self, x, head):
+        if (head["decision_type"] != "<="):
+            logger.info("WARNING, problem in forward pass")
+        feature = x[head["split_index"]]
+        bool = True if feature <= head["threshold"] else False
+        if (bool):
+            return head["left_child"]
+        else:
+            return head["right_child"]
+
+    def is_leaf(self, node):
+        if ('leaf_value' in node):
+            return True
+        else:
+            return False
 
     def save_model(self):
         with open(self.file_pth_save_model, "wb") as output_file:

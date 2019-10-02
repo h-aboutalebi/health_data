@@ -61,6 +61,7 @@ class TreeNode(object):
                     best_val = instances[sorted_instance_ids[j]][feature_id]
                     best_left_instance_ids = sorted_instance_ids[:j+1]
                     best_right_instance_ids = sorted_instance_ids[j+1:]
+
         if best_gain < param['min_split_gain']:
             self.is_leaf = True
             self.weight = self._calc_leaf_weight(grad, hessian, param['lambda']) * shrinkage_rate
