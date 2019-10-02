@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 try:
     import cPickle as pkl
@@ -24,7 +25,7 @@ class Run():
     def train_model(self, load_mode):
         if (load_mode is False):
             logger.info("Building model ...")
-            for i in range(len(self.data_base_list)):
+            for i in range(1):
                 start_time = time.time()
                 x_test = self.data_base_list[i][:, 1:]
                 y_test = np.array(self.data_base_list[i][:, 1]).reshape(-1)
@@ -36,6 +37,10 @@ class Run():
                 my_y_pred = self.forward_pass(x_test)
                 y_pred = np.array(self.model.predict(x_test))
                 logger.info("Gap between my forward pass and lightgbm is {}".format(np.sum(np.abs(y_pred - np.array(my_y_pred)) / x_train.shape[0] )))
+                plt.figure()
+                plt.plot(y_pred)
+                plt.plot(my_y_pred)
+                plt.show()
                 MSE = mean_squared_error(y_test, y_pred)
                 logger.info("*" * 15)
                 logger.info("Results: For Test Set: {} .With Train Set of {}:".format(self.files_name[i], file_names_train))
